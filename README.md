@@ -8,10 +8,10 @@
 </p>
 
 ## Features
-* Both vertical & horizontal scrollbars.
+* Supports vertical & horizontal scrollbars.
 * Easy scrollbar configration - everything using CSS!
 * Uses MutationObserver to update scrollbar size & position.
-* Supports min-height to ensure scrollbar is usable on very long content.
+* Supports min-height (default 20% of viewport) to ensure scrollbar remains draggable on very long content.
 * When user has scrolled to the beginning or the end of content, Scrolly seamlessly activates scrolling of parent body by detecting if user scrolled with greater scroll inertia.
 
 ## Installation
