@@ -88,13 +88,13 @@ For complete reference, you can look at [vue-scrolly's default CSS styling](http
 
 ## Options
 
-** Scrolly, ScrollyViewport & ScrollyBar **
+**Scrolly, ScrollyViewport & ScrollyBar**
 
 |    Property    |    Description   |   Type   |	Default	|
 | -----------------  | ---------------- | :--------: | :----------: |
 | classname    | Additional classnames you can add to the scrolly element. |String | (empty string) |
 
-** ScrollyBar **
+**ScrollyBar**
 
 |    Property    |    Description   |   Type   |  Default |
 | -----------------  | ---------------- | :--------: | :----------: |
