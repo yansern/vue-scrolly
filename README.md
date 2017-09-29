@@ -4,7 +4,7 @@
 <p align="center">
 <img src="https://raw.githubusercontent.com/yansern/vue-scrolly/master/demo/preview.gif" />
 <br/>
-Check out the <a href="https://yansern.github.io/vue-scrolly/demo/index.html" target="_blank">live demo</a>.
+<b>Check out the <a href="https://yansern.github.io/vue-scrolly/demo/index.html" target="_blank">live demo</a>.</b>
 </p>
 
 ## Features
