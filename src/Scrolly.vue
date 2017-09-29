@@ -1,5 +1,5 @@
 <template>
-<div :class="classnames" @mouseenter="onMouseEnter" @mousedown="onMouseDown">
+<div :class="classnames" @mouseenter="onMouseEnter" @mousedown="onMouseDown" @mouseleave="onMouseLeave">
   <slot></slot>
 </div>
 </template>
