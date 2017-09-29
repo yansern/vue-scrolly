@@ -1,9 +1,11 @@
 # vue-scrolly ![npm tag](https://img.shields.io/npm/v/vue-scrolly.svg)
 > Overlay scrollbar for [Vue.js](http://vuejs.org).
 
-![Scrolly Preview](https://raw.githubusercontent.com/yansern/vue-scrolly/master/demo/preview.gif)
-
-Check out the [live demo](https://yansern.github.io/vue-scrolly/demo/index.html).
+<p align="center">
+<img src="https://raw.githubusercontent.com/yansern/vue-scrolly/master/demo/preview.gif" />
+<br/>
+Check out the <a href="https://yansern.github.io/vue-scrolly/demo/index.html" target="_blank">live demo</a>.
+</p>
 
 ## Features
 * Uses MutationObserver to track and update scrollbar size & position.
