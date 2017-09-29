@@ -4,7 +4,7 @@
 <p align="center">
 <img src="https://raw.githubusercontent.com/yansern/vue-scrolly/master/demo/preview.gif" />
 <br/>
-Check out the <a href="https://yansern.github.io/vue-scrolly/demo/index.html" target="_blank">live demo</a>.
+<b>Check out the <a href="https://yansern.github.io/vue-scrolly/demo/index.html" target="_blank">live demo</a>.</b>
 </p>
 
 ## Features
@@ -88,13 +88,13 @@ For complete reference, you can look at [vue-scrolly's default CSS styling](http
 
 ## Options
 
-** Scrolly, ScrollyViewport & ScrollyBar **
+**Scrolly, ScrollyViewport & ScrollyBar**
 
 |    Property    |    Description   |   Type   |	Default	|
 | -----------------  | ---------------- | :--------: | :----------: |
 | classname    | Additional classnames you can add to the scrolly element. |String | (empty string) |
 
-** ScrollyBar **
+**ScrollyBar**
 
 |    Property    |    Description   |   Type   |  Default |
 | -----------------  | ---------------- | :--------: | :----------: |
