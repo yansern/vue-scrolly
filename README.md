@@ -35,11 +35,12 @@ export default {
 
 Then, construct your html block with overlay scrollbar using scrolly components.
 ```html
-<scrolly classname="foo">
+<scrolly class="foo">
   <scrolly-viewport>
     <!-- Your contents here -->
   </scrolly>
   <scrolly-bar axis="y"></scrolly-bar>
+  <scrolly-bar axis="x"></scrolly-bar>
 </scrolly>
 ```
 
@@ -51,30 +52,8 @@ Finally, remember to add a dimension to your html block.
 }
 ```
 
-## Adding horizontal scrollbar
-If you like to include a horizontal scrollbar, just add it using the `scrolly-bar` tag.
-```html
-<scrolly classname="foo">
-  <scrolly-viewport>
-    <!-- Your contents here -->
-  </scrolly>
-  <scrolly-bar axis="y"></scrolly-bar>
-  <scrolly-bar axis="x"></scrolly-bar> <!-- Add it here -->
-</scrolly>
-```
-
-Scrolly supports both vertical & horizontal scrollbar at the same time.
-
 ## Customizing scrolly
-You can add additional classnames to any scrolly elements.
-```html
-<scrolly classname="foo">
-  <scrolly-viewport classname="bar"></scrolly>
-  <scrolly-bar classname="xyz" axis="y"></scrolly-bar>
-</scrolly>
-```
-
-Using these additional classnames, you can customize the appearance of the overlay scrollbars using CSS overrides.
+You can customize the appearance of the overlay scrollbars using CSS overrides.
 
 For example, this CSS snippet creates blue overlay scrollbar:
 ```css
@@ -87,12 +66,6 @@ For complete reference, you can look at [vue-scrolly's default CSS styling](http
 
 
 ## Options
-
-**Scrolly, ScrollyViewport & ScrollyBar**
-
-|    Property    |    Description   |   Type   |	Default	|
-| -----------------  | ---------------- | :--------: | :----------: |
-| classname    | Additional classnames you can add to the scrolly element. |String | (empty string) |
 
 **ScrollyBar**
 
