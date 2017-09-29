@@ -10,19 +10,14 @@ export default {
     axis: {
       type: String,
       default: 'y'
-    },
-    classname: {
-      type: String,
-      default: '',
-    },
+    }
   },
 
   computed: {
     classnames() {
       return [
         'scrolly-bar',
-        'axis-' + this.axis,
-        this.classname,
+        'axis-' + this.axis
       ];
     },
   },

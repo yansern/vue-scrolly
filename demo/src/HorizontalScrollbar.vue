@@ -1,5 +1,5 @@
 <template>
-<scrolly classname="horizontal-scrollbar-demo">
+<scrolly class="horizontal-scrollbar-demo">
   <scrolly-viewport>
     <article :style="{ width: width + '%' }">
       <button type="button" class="button" @click="addParagraph">Add Paragraph</button>

@@ -16,13 +16,6 @@ import {
 export default {
   name: 'scrolly',
 
-  props: {
-    classname: {
-      type: String,
-      default: '',
-    },
-  },
-
   data() {
     return {
       container: null,
@@ -38,11 +31,7 @@ export default {
 
   computed: {
     classnames() {
-      return [
-        'scrolly',
-        this.isScrolling ? 'is-scrolling' : '',
-        this.classname,
-      ];
+      return ['scrolly', this.isScrolling ? 'is-scrolling' : ''];
     },
   },
 
