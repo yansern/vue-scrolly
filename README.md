@@ -9,8 +9,8 @@
 
 ## Features
 * Uses MutationObserver to track and update scrollbar size & position.
-* Supports both vertical & horizontal scrollbars.
-* Customize everything with CSS including minHeight/maxHeight/minWidth/maxWidth configurations.
+* Supports vertical & horizontal scrollbars.
+* Configure everything using CSS!
 
 ## Installation
 ```bash
@@ -19,7 +19,7 @@ $ npm install vue-scrolly
 
 ## Using vue-scrolly
 
-First, import vue-scrolly into your existing Vue component.
+First, import `vue-scrolly` into your Vue component.
 ```js
 import { Scrolly, ScrollyViewport, ScrollyBar } from 'vue-scrolly';
 
@@ -33,9 +33,9 @@ export default {
 }
 ```
 
-Then, construct your html block with overlay scrollbar using scrolly components.
+Then, construct your div block with overlay scrollbar using scrolly component.
 ```html
-<scrolly class="foo">
+<scrolly class="foo" :style="{ width: '400px', height: '300px' }">
   <scrolly-viewport>
     <!-- Your contents here -->
   </scrolly>
@@ -44,25 +44,17 @@ Then, construct your html block with overlay scrollbar using scrolly components.
 </scrolly>
 ```
 
-Finally, remember to add a dimension to your html block.
-```css
-.scrolly.foo {
-  width: 400px;
-  height: 300px;
-}
-```
+## Customizing overlay scrollbar
+You can customize the appearance of the overlay scrollbar using CSS overrides.
 
-## Customizing scrolly
-You can customize the appearance of the overlay scrollbars using CSS overrides.
-
-For example, this CSS snippet creates blue overlay scrollbar:
+This simple example below creates custom blue overlay scrollbar:
 ```css
 .scrolly.foo .scrolly-bar:before {
     background: blue;
 }
 ```
 
-For complete reference, you can look at [vue-scrolly's default CSS styling](https://github.com/yansern/vue-scrolly/blob/master/src/Scrolly.vue) from the main Scrolly.vue component file.
+For complete reference, you can look at [vue-scrolly's default CSS stylesheet](https://github.com/yansern/vue-scrolly/blob/master/src/Scrolly.vue) from the main Scrolly.vue component file.
 
 
 ## Options
