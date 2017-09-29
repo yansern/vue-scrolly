@@ -635,16 +635,10 @@ var MOUSE_WHEEL_EVENT = 'wheel';
 var MOUSE_MOVE_EVENT = 'mousemove';
 var MOUSE_UP_EVENT = 'mouseup';
 var DOM_CHANGE_HANDLER_THROTTLING_RATE = 250;
+var PARENT_SCROLL_ACTIVATION_POINT = 25;
 
 var __vue_module__ = {
   name: 'scrolly',
-
-  props: {
-    classname: {
-      type: String,
-      default: '',
-    },
-  },
 
   data: function data() {
     return {
@@ -661,10 +655,7 @@ var __vue_module__ = {
 
   computed: {
     classnames: function classnames() {
-      return [
-        'scrolly',
-        this.isScrolling ? 'is-scrolling' : '',
-        this.classname ];
+      return ['scrolly', this.isScrolling ? 'is-scrolling' : ''];
     },
   },
 
@@ -831,17 +822,32 @@ var __vue_module__ = {
     },
 
     onMouseWheel: function onMouseWheel(event) {
+      // Normalize wheel event and get scroll delta
       var ref = normalizeWheel(event);
       var dx = ref.pixelX;
       var dy = ref.pixelY;
 
-      // Prevent scrolling of parent body
-      if ((this.barX && dx !== 0) || (this.barY && dy !== 0)) {
-        event.preventDefault();
-      }
+      // Get scroll layout
+      var ref$1 =
+        // after refreshing scroll layout
+        this.refreshScrollLayout(dx, dy);
+      var scrollLayoutX = ref$1.x;
+      var scrollLayoutY = ref$1.y;
 
-      // Update scrolly
-      this.refreshScrollLayout(dx, dy);
+      // Determine if scrolling of parent body should be prevented
+      var canScrollParentX = scrollLayoutX && scrollLayoutX.canScrollParent;
+      var canScrollParentY = scrollLayoutY && scrollLayoutY.canScrollParent;
+
+      // If scrolling parent is not possible, prevent it.
+      !(canScrollParentX || canScrollParentY) && event.preventDefault();
+    },
+
+    onMouseLeave: function onMouseLeave(event) {
+      var ref = this;
+      var barX = ref.barX;
+      var barY = ref.barY;
+      barX && (barX.scrollLayout = null);
+      barY && (barY.scrollLayout = null);
     },
 
     onDomChange: throttle(function() {
@@ -852,6 +858,8 @@ var __vue_module__ = {
       if ( dx === void 0 ) dx = 0;
       if ( dy === void 0 ) dy = 0;
 
+      var scrollLayout = {};
+
       // Get viewport, barX, barY
       var ref = this;
       var viewport = ref.viewport;
@@ -860,6 +868,7 @@ var __vue_module__ = {
 
       if (barX) {
         // Update scroll position
+        var scrolled = dx !== 0;
         viewport.scrollLeft += dx;
 
         // Get viewport dimension and scroll position
@@ -886,19 +895,71 @@ var __vue_module__ = {
 
         // Calculate new bar position
         var barLeft = scrollLeft / (scrollWidth - viewportWidth) * maxBarLeft;
-        barLeft < minBarLeft && (barLeft = minBarLeft);
-        barLeft > maxBarLeft && (barLeft = maxBarLeft);
+
+        // Determine if new bar position is on edge
+        var onLeftEdge = barLeft < minBarLeft;
+        var onRightEdge = barLeft > maxBarLeft;
+        var onEdge = onLeftEdge || onRightEdge;
+
+        // If new bar position is on edge,
+        // ensure it stays within min/max position.
+        onLeftEdge && (barLeft = minBarLeft);
+        onRightEdge && (barLeft = maxBarLeft);
 
         // Set bar position
         barStyle.left = toPercent(barLeft / viewportWidth);
 
         // Determine if bar needs to be shown
-        barStyle.display = barWidth < viewportWidth ? 'block' : 'none';
+        var visible = barWidth < viewportWidth;
+        barStyle.display = visible ? 'block' : 'none';
         barStyle.visibility = 'visible';
+
+        // Determine if there's enough inertia
+        // to unlock parent scrolling.
+        var canUnlockParentScroll =
+          Math.abs(dx) > PARENT_SCROLL_ACTIVATION_POINT;
+
+        // Get previous scroll layout to determine
+        // if we can unlock parent scrolling
+        var previousScrollLayout = barX.scrollLayout || {};
+        var wasOnEdge = previousScrollLayout.onEdge;
+        var couldUnlockParentScroll = previousScrollLayout.canUnlockParentScroll;
+        var couldScrollParent = previousScrollLayout.canScrollParent;
+
+        // Allow scrolling of parent...
+        var canScrollParent =
+          // ...if parent scrolling was previously unlocked,
+          // continue let user scroll parent body.
+          couldScrollParent ||
+          // ...if scrollbar reached the edge of the viewport,
+          // and user scrolled with enough inertia with
+          // the intention to scroll parent body.
+          (wasOnEdge && couldUnlockParentScroll);
+
+        // Add to computedLayout
+        scrollLayout.x = barX.scrollLayout = {
+          barX: barX,
+          scrollLeft: scrollLeft,
+          scrollWidth: scrollWidth,
+          viewportWidth: viewportWidth,
+          barWidth: barWidth,
+          barLeft: barLeft,
+          minBarLeft: minBarLeft,
+          maxBarLeft: maxBarLeft,
+          visible: visible,
+          onLeftEdge: onLeftEdge,
+          onRightEdge: onRightEdge,
+          onEdge: onEdge,
+          visible: visible,
+          canUnlockParentScroll: canUnlockParentScroll,
+          canScrollParent: canScrollParent,
+          scrolled: scrolled,
+        };
       }
 
       if (barY) {
         // Update scroll position
+        var scrolled$1 = dy !== 0;
         viewport.scrollTop += dy;
 
         // Get viewport dimension and scroll position
@@ -925,16 +986,71 @@ var __vue_module__ = {
 
         // Calculate new bar position
         var barTop = scrollTop / (scrollHeight - viewportHeight) * maxBarTop;
-        barTop < minBarTop && (barTop = minBarTop);
-        barTop > maxBarTop && (barTop = maxBarTop);
+
+        // Determine if new bar position is on edge
+        var onTopEdge = barTop <= minBarTop;
+        var onBottomEdge = barTop >= maxBarTop;
+        var onEdge$1 = onTopEdge || onBottomEdge;
+
+        // If new bar position is on edge,
+        // ensure it stays within min/max position.
+        onTopEdge && (barTop = minBarTop);
+        onBottomEdge && (barTop = maxBarTop);
 
         // Set bar position
         barStyle$1.top = toPercent(barTop / viewportHeight);
 
         // Determine if bar needs to be shown
-        barStyle$1.display = barHeight < viewportHeight ? 'block' : 'none';
+        var visible$1 = barHeight < viewportHeight;
+        barStyle$1.display = visible$1 ? 'block' : 'none';
         barStyle$1.visibility = 'visible';
+
+        // Determine if there's enough inertia
+        // to unlock parent scrolling.
+        var canUnlockParentScroll$1 =
+          Math.abs(dy) > PARENT_SCROLL_ACTIVATION_POINT;
+
+        // Get previous scroll layout to determine
+        // if we can unlock parent scrolling
+        var previousScrollLayout$1 = barY.scrollLayout || {};
+        var ref$1 = previousScrollLayout$1;
+        var wasOnEdge$1 = ref$1.onEdge;
+        var couldUnlockParentScroll$1 = ref$1.canUnlockParentScroll;
+        var couldScrollParent$1 = ref$1.canScrollParent;
+
+        // Allow scrolling of parent...
+        var canScrollParent$1 =
+          // ...if scrollbar is on edge and...
+          onEdge$1 &&
+          // ...if parent scrolling was previously unlocked,
+          // continue let user scroll parent body.
+          (couldScrollParent$1 ||
+            // ...if scrollbar reached the edge of the viewport,
+            // and user scrolled with enough inertia with
+            // the intention to scroll parent body.
+            (wasOnEdge$1 && couldUnlockParentScroll$1));
+
+        // Add to computedLayout
+        scrollLayout.y = barY.scrollLayout = {
+          barY: barY,
+          scrollTop: scrollTop,
+          scrollHeight: scrollHeight,
+          viewportHeight: viewportHeight,
+          barHeight: barHeight,
+          barTop: barTop,
+          minBarTop: minBarTop,
+          maxBarTop: maxBarTop,
+          onTopEdge: onTopEdge,
+          onBottomEdge: onBottomEdge,
+          onEdge: onEdge$1,
+          visible: visible$1,
+          canUnlockParentScroll: canUnlockParentScroll$1,
+          canScrollParent: canScrollParent$1,
+          scrolled: scrolled$1,
+        };
       }
+
+      return scrollLayout;
     },
   },
 
@@ -1039,7 +1155,7 @@ var __vue_module__ = {
 
 
 
-    var __$__vue_module__ = Object.assign(__vue_module__, {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:_vm.classnames,on:{"mouseenter":_vm.onMouseEnter,"mousedown":_vm.onMouseDown}},[_vm._t("default")],2)},staticRenderFns: [],});
+    var __$__vue_module__ = Object.assign(__vue_module__, {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:_vm.classnames,on:{"mouseenter":_vm.onMouseEnter,"mousedown":_vm.onMouseDown,"mouseleave":_vm.onMouseLeave}},[_vm._t("default")],2)},staticRenderFns: [],});
     __$__vue_module__.prototype = __vue_module__.prototype;
 
 (function(){ if(typeof document !== 'undefined'){ var head=document.head||document.getElementsByTagName('head')[0], style=document.createElement('style'), css=""; style.type='text/css'; if (style.styleSheet){ style.styleSheet.cssText = css; } else { style.appendChild(document.createTextNode(css)); } head.appendChild(style); } })();
@@ -1050,18 +1166,11 @@ var __vue_module__ = {
 var ScrollyViewport = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:_vm.classnames},[_vm._t("default")],2)},staticRenderFns: [],
   name: 'scrolly-viewport',
 
-  props: {
-    classname: {
-      type: String,
-      default: '',
-    },
-  },
-
   computed: {
     classnames: function classnames() {
       return [
-        'scrolly-viewport',
-        this.classname ];
+        'scrolly-viewport'
+      ];
     },
   },
 };
@@ -1078,19 +1187,15 @@ var ScrollyBar = {render: function(){var _vm=this;var _h=_vm.$createElement;var 
     axis: {
       type: String,
       default: 'y'
-    },
-    classname: {
-      type: String,
-      default: '',
-    },
+    }
   },
 
   computed: {
     classnames: function classnames() {
       return [
         'scrolly-bar',
-        'axis-' + this.axis,
-        this.classname ];
+        'axis-' + this.axis
+      ];
     },
   },
 };

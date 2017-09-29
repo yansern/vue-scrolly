@@ -8,9 +8,11 @@
 </p>
 
 ## Features
-* Uses MutationObserver to track and update scrollbar size & position.
-* Supports vertical & horizontal scrollbars.
-* Configure everything using CSS!
+* Both vertical & horizontal scrollbars.
+* Easy scrollbar configration - everything using CSS!
+* Uses MutationObserver to update scrollbar size & position.
+* Supports min-height to ensure scrollbar is usable on very long content.
+* When user has scrolled to the beginning or the end of content, Scrolly seamlessly activates scrolling of parent body by detecting if user scrolled with greater scroll inertia.
 
 ## Installation
 ```bash
