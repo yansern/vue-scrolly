@@ -661,16 +661,22 @@ var __vue_module__ = {
 
   mounted: function mounted() {
     this.$nextTick(function() {
-      var container = this.$el;
-      var viewport, barX, barY;
+      var container = this.$el,
+        viewport,
+        barX,
+        barY;
 
       // Scan through child nodes to pick up viewport & scrollbars.
-      [].concat( container.childNodes ).forEach(function (childNode) {
-        var className = childNode.className; if ( className === void 0 ) className = '';
+      var childNodes = container.childNodes;
+      var childNode,
+        i = 0;
+      while ((childNode = childNodes[i++])) {
+        var className = childNode.className;
+        if (!className) { continue; }
         className.match('scrolly-viewport') && (viewport = childNode);
         className.match('axis-x') && (barX = childNode);
         className.match('axis-y') && (barY = childNode);
-      });
+      }
 
       // If viewport or scrollbars do not exist, stop.
       if (!viewport || (!barX && !barY)) {

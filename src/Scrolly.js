@@ -38,16 +38,22 @@ export default {
 
   mounted() {
     this.$nextTick(function() {
-      let container = this.$el;
-      let viewport, barX, barY;
+      let container = this.$el,
+        viewport,
+        barX,
+        barY;
 
       // Scan through child nodes to pick up viewport & scrollbars.
-      [...container.childNodes].forEach(childNode => {
-        let { className = '' } = childNode;
+      let { childNodes } = container,
+        childNode,
+        i = 0;
+      while ((childNode = childNodes[i++])) {
+        let { className } = childNode;
+        if (!className) continue;
         className.match('scrolly-viewport') && (viewport = childNode);
         className.match('axis-x') && (barX = childNode);
         className.match('axis-y') && (barY = childNode);
-      });
+      }
 
       // If viewport or scrollbars do not exist, stop.
       if (!viewport || (!barX && !barY)) {
