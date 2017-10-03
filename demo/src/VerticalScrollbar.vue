@@ -1,5 +1,5 @@
 <template>
-<scrolly class="vertical-scrollbar-demo">
+<scrolly class="vertical-scrollbar-demo" :passive-scroll="true">
   <scrolly-viewport>
     <article>
       <button type="button" class="button" @click="addParagraph">Add Paragraph</button>

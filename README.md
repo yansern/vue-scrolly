@@ -61,6 +61,14 @@ For complete reference, you can look at [vue-scrolly's default CSS stylesheet](h
 
 ## Options
 
+**Scrolly**
+
+|    Property    |    Description   |   Type   |  Default |
+| -----------------  | ---------------- | :--------: | :----------: |
+| parentScroll    | Scroll parent when user has completed scrolling to the beginning or the end of the viewport. | Boolean | true |
+| passiveScroll    | When true, mousewheel event is attached as a non-blocking passive listener for improved scrolling performance. Disabling parentScroll will not be possible. See: [https://www.chromestatus.com/feature/5745543795965952](https://www.chromestatus.com/feature/5745543795965952)| Boolean | false |
+
+
 **ScrollyBar**
 
 |    Property    |    Description   |   Type   |  Default |

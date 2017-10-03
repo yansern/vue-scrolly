@@ -17,6 +17,17 @@ import {
 export default {
   name: 'scrolly',
 
+  props: {
+    parentScroll: {
+      type: Boolean,
+      default: true,
+    },
+    passiveScroll: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
   data() {
     return {
       container: null,
@@ -62,12 +73,16 @@ export default {
 
       // Attach mouse wheel event
       const onMouseWheelHandler = this.onMouseWheel.bind(this);
+
+      // If parentScroll is disabled, passiveScroll cannot be enabled.
+      let passive = !this.parentScroll ? false : this.passiveScroll;
+
       container.addEventListener(
         MOUSE_WHEEL_EVENT,
         onMouseWheelHandler,
-        // Unable to turn on passive: true.
+        // Unable to turn on passive: true if parentScroll is disabled.
         // Violation warning is expected in Chrome.
-        supportsPassiveEvents ? { passive: false } : false
+        supportsPassiveEvents ? { passive } : false
       );
 
       // Observe viewport for content changes
@@ -212,12 +227,16 @@ export default {
         // after refreshing scroll layout
         this.refreshScrollLayout(dx, dy);
 
+      // If using passive scrolling, stop.
+      if (this.passiveScroll) return;
+
       // Determine if scrolling of parent body should be prevented
       let canScrollParentX = scrollLayoutX && scrollLayoutX.canScrollParent;
       let canScrollParentY = scrollLayoutY && scrollLayoutY.canScrollParent;
 
       // If scrolling parent is not possible, prevent it.
-      !(canScrollParentX || canScrollParentY) && event.preventDefault();
+      (!this.parentScroll || !(canScrollParentX || canScrollParentY)) &&
+        event.preventDefault();
     },
 
     onMouseLeave(event) {
