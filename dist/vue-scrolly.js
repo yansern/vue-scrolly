@@ -621,7 +621,7 @@ var supportsPassiveEvents = false;
 try {
   var opts = Object.defineProperty({}, 'passive', {
     get: function() {
-      supportsPassive = true;
+      supportsPassiveEvents = true;
     },
   });
   window.addEventListener('test', null, opts);
@@ -639,6 +639,17 @@ var PARENT_SCROLL_ACTIVATION_POINT = 25;
 
 var __vue_module__ = {
   name: 'scrolly',
+
+  props: {
+    parentScroll: {
+      type: Boolean,
+      default: true,
+    },
+    passiveScroll: {
+      type: Boolean,
+      default: false,
+    },
+  },
 
   data: function data() {
     return {
@@ -685,12 +696,16 @@ var __vue_module__ = {
 
       // Attach mouse wheel event
       var onMouseWheelHandler = this.onMouseWheel.bind(this);
+
+      // If parentScroll is disabled, passiveScroll cannot be enabled.
+      var passive = !this.parentScroll ? false : this.passiveScroll;
+
       container.addEventListener(
         MOUSE_WHEEL_EVENT,
         onMouseWheelHandler,
-        // Unable to turn on passive: true.
+        // Unable to turn on passive: true if parentScroll is disabled.
         // Violation warning is expected in Chrome.
-        supportsPassiveEvents ? { passive: false } : false
+        supportsPassiveEvents ? { passive: passive } : false
       );
 
       // Observe viewport for content changes
@@ -840,12 +855,16 @@ var __vue_module__ = {
       var scrollLayoutX = ref$1.x;
       var scrollLayoutY = ref$1.y;
 
+      // If using passive scrolling, stop.
+      if (this.passiveScroll) { return; }
+
       // Determine if scrolling of parent body should be prevented
       var canScrollParentX = scrollLayoutX && scrollLayoutX.canScrollParent;
       var canScrollParentY = scrollLayoutY && scrollLayoutY.canScrollParent;
 
       // If scrolling parent is not possible, prevent it.
-      !(canScrollParentX || canScrollParentY) && event.preventDefault();
+      (!this.parentScroll || !(canScrollParentX || canScrollParentY)) &&
+        event.preventDefault();
     },
 
     onMouseLeave: function onMouseLeave(event) {
