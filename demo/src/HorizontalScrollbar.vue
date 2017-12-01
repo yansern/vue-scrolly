@@ -1,5 +1,5 @@
 <template>
-<scrolly class="horizontal-scrollbar-demo">
+<scrolly class="horizontal-scrollbar-demo" @scrollchange="logScrollLayout">
   <scrolly-viewport>
     <article :style="{ width: width + '%' }">
       <button type="button" class="button" @click="addParagraph">Add Paragraph</button>
@@ -54,6 +54,10 @@ export default {
       if (this.width <= 100) {
         this.width = 100;
       }
+    },
+
+    logScrollLayout(scrollLayout) {
+      console.log('scrollLayout:', scrollLayout);
     }
   }
 };

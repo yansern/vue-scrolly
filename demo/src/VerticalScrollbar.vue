@@ -1,5 +1,5 @@
 <template>
-<scrolly class="vertical-scrollbar-demo" :passive-scroll="true">
+<scrolly class="vertical-scrollbar-demo" :passive-scroll="true" @scrollchange="logScrollLayout">
   <scrolly-viewport>
     <article>
       <button type="button" class="button" @click="addParagraph">Add Paragraph</button>
@@ -40,6 +40,10 @@ export default {
       if (this.paragraphs <= 1) {
         this.paragraphs = 1;
       }
+    },
+
+    logScrollLayout(scrollLayout) {
+      console.log('scrollLayout:', scrollLayout);
     }
   }
 };
