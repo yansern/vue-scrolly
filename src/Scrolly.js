@@ -128,7 +128,10 @@ export default {
 
       if (!className.match('scrolly-bar')) return;
 
+      let scrollLayout = {};
+
       const self = this;
+      const { barX, barY } = this;
       const { container, viewport } = this;
       const { addEventListener, removeEventListener } = window;
       const isAxisX = className.match('axis-x');
@@ -174,6 +177,35 @@ export default {
           // set the new viewport scroll position.
           viewport.scrollLeft =
             barLeft / maxBarLeft * (scrollWidth - viewportWidth);
+
+          // Determine if new bar position is on edge
+          let onLeftEdge = barLeft < minBarLeft;
+          let onRightEdge = barLeft > maxBarLeft;
+          let onEdge = onLeftEdge || onRightEdge;
+
+          // Determine other scroll layout properties
+          let visible = true;
+          let canUnlockParentScroll = false;
+          let canScrollParent = false;
+          let scrolled = true;
+
+          // Create scroll layout
+          scrollLayout.x = barX.scrollLayout = {
+            barX,
+            scrollLeft,
+            scrollWidth,
+            viewportWidth,
+            barWidth,
+            barLeft,
+            minBarLeft,
+            maxBarLeft,
+            visible,
+            onLeftEdge,
+            onRightEdge,
+            onEdge,
+            canUnlockParentScroll,
+            canScrollParent,
+          };
         }
 
         if (isAxisY) {
@@ -205,7 +237,40 @@ export default {
           // set the new viewport scroll position.
           viewport.scrollTop =
             barTop / maxBarTop * (scrollHeight - viewportHeight);
+
+          // Determine if new bar position is on edge
+          let onTopEdge = barTop <= minBarTop;
+          let onBottomEdge = barTop >= maxBarTop;
+          let onEdge = onTopEdge || onBottomEdge;
+
+          // Determine other scroll layout properties
+          let visible = true;
+          let canUnlockParentScroll = false;
+          let canScrollParent = false;
+          let scrolled = true;
+
+          // Create scroll layout
+          scrollLayout.y = barY.scrollLayout = {
+            barY,
+            scrollTop,
+            scrollHeight,
+            viewportHeight,
+            barHeight,
+            barTop,
+            minBarTop,
+            maxBarTop,
+            onTopEdge,
+            onBottomEdge,
+            onEdge,
+            visible,
+            canUnlockParentScroll,
+            canScrollParent,
+            scrolled,
+          };
         }
+
+        // Emit scrollchange event
+        self.$emit('scrollchange', scrollLayout);
       }
 
       function onMouseUp() {
@@ -445,6 +510,9 @@ export default {
           scrolled,
         };
       }
+
+      // Emit scrollchange event
+      this.$emit('scrollchange', scrollLayout);
 
       return scrollLayout;
     },
