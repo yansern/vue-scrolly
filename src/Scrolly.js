@@ -350,7 +350,8 @@ export default {
         const maxBarLeft = viewportWidth - barWidth;
 
         // Calculate new bar position
-        let barLeft = scrollLeft / (scrollWidth - viewportWidth) * maxBarLeft;
+        let barLeft =
+          scrollLeft / (scrollWidth - viewportWidth) * maxBarLeft || 0;
 
         // Determine if new bar position is on edge
         let onLeftEdge = barLeft < minBarLeft;
@@ -385,14 +386,15 @@ export default {
         } = previousScrollLayout;
 
         // Allow scrolling of parent...
-        let canScrollParent =
-          // ...if parent scrolling was previously unlocked,
-          // continue let user scroll parent body.
+        let canScrollParent = !!// ...if parent scrolling was previously unlocked,
+        // continue let user scroll parent body.
+        (
           couldScrollParent ||
           // ...if scrollbar reached the edge of the viewport,
           // and user scrolled with enough inertia with
           // the intention to scroll parent body.
-          (wasOnEdge && couldUnlockParentScroll);
+          (wasOnEdge && couldUnlockParentScroll)
+        );
 
         // Add to computedLayout
         scrollLayout.x = barX.scrollLayout = {
@@ -445,7 +447,8 @@ export default {
         const maxBarTop = viewportHeight - barHeight;
 
         // Calculate new bar position
-        let barTop = scrollTop / (scrollHeight - viewportHeight) * maxBarTop;
+        let barTop =
+          scrollTop / (scrollHeight - viewportHeight) * maxBarTop || 0;
 
         // Determine if new bar position is on edge
         let onTopEdge = barTop <= minBarTop;
@@ -480,8 +483,8 @@ export default {
         } = previousScrollLayout;
 
         // Allow scrolling of parent...
-        let canScrollParent =
-          // ...if scrollbar is on edge and...
+        let canScrollParent = !!// ...if scrollbar is on edge and...
+        (
           onEdge &&
           // ...if parent scrolling was previously unlocked,
           // continue let user scroll parent body.
@@ -489,7 +492,8 @@ export default {
             // ...if scrollbar reached the edge of the viewport,
             // and user scrolled with enough inertia with
             // the intention to scroll parent body.
-            (wasOnEdge && couldUnlockParentScroll));
+            (wasOnEdge && couldUnlockParentScroll))
+        );
 
         // Add to computedLayout
         scrollLayout.y = barY.scrollLayout = {
