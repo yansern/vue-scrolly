@@ -76,6 +76,13 @@ For complete reference, you can look at [vue-scrolly's default CSS stylesheet](h
 | axis    | Displays horizontal or vertical scrollbar. |String [x, y] | y |
 
 
+## Events
+
+| Event | Description | Parameters |
+| ----- | ----------- | :---------: |
+| scrollchange | Triggers when user scrolls the viewport | scrollLayout: object |
+
+
 ## License
 **[vue-scrolly](https://github.com/yansern/vue-scrolly)** by [Yan Sern](https://twitter.com/yansernio) licensed under the [MIT+BSD](LICENSE). This project also uses [normalizeWheel](https://www.npmjs.com/package/normalize-wheel) packaged by [basilfx](https://www.npmjs.com/~basilfx) which contains codes extracted from BSD-licensed [Fixed Data Table](https://github.com/facebook/fixed-data-table) project by Facebook.
 
