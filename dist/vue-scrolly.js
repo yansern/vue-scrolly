@@ -755,9 +755,14 @@ var __vue_module__ = {
 
       if (!className.match('scrolly-bar')) { return; }
 
+      var scrollLayout = {};
+
       var self = this;
       var ref$1 = this;
-      var viewport = ref$1.viewport;
+      var barX = ref$1.barX;
+      var barY = ref$1.barY;
+      var ref$2 = this;
+      var viewport = ref$2.viewport;
       var addEventListener = window.addEventListener;
       var removeEventListener = window.removeEventListener;
       var isAxisX = className.match('axis-x');
@@ -777,6 +782,7 @@ var __vue_module__ = {
 
         if (isAxisX) {
           // Get viewport dimension and scroll position
+          var scrollLeft = viewport.scrollLeft;
           var scrollWidth = viewport.scrollWidth;
           var viewportWidth = viewport.offsetWidth;
 
@@ -801,10 +807,37 @@ var __vue_module__ = {
           // set the new viewport scroll position.
           viewport.scrollLeft =
             barLeft / maxBarLeft * (scrollWidth - viewportWidth);
+
+          // Determine if new bar position is on edge
+          var onLeftEdge = barLeft < minBarLeft;
+          var onRightEdge = barLeft > maxBarLeft;
+          var onEdge = onLeftEdge || onRightEdge;
+
+          // Determine other scroll layout properties
+          var visible = true;
+          var canUnlockParentScroll = false;
+          var canScrollParent = false;
+          scrollLayout.x = barX.scrollLayout = {
+            barX: barX,
+            scrollLeft: scrollLeft,
+            scrollWidth: scrollWidth,
+            viewportWidth: viewportWidth,
+            barWidth: barWidth,
+            barLeft: barLeft,
+            minBarLeft: minBarLeft,
+            maxBarLeft: maxBarLeft,
+            visible: visible,
+            onLeftEdge: onLeftEdge,
+            onRightEdge: onRightEdge,
+            onEdge: onEdge,
+            canUnlockParentScroll: canUnlockParentScroll,
+            canScrollParent: canScrollParent,
+          };
         }
 
         if (isAxisY) {
           // Get viewport dimension and scroll position
+          var scrollTop = viewport.scrollTop;
           var scrollHeight = viewport.scrollHeight;
           var viewportHeight = viewport.offsetHeight;
 
@@ -829,7 +862,40 @@ var __vue_module__ = {
           // set the new viewport scroll position.
           viewport.scrollTop =
             barTop / maxBarTop * (scrollHeight - viewportHeight);
+
+          // Determine if new bar position is on edge
+          var onTopEdge = barTop <= minBarTop;
+          var onBottomEdge = barTop >= maxBarTop;
+          var onEdge$1 = onTopEdge || onBottomEdge;
+
+          // Determine other scroll layout properties
+          var visible$1 = true;
+          var canUnlockParentScroll$1 = false;
+          var canScrollParent$1 = false;
+          var scrolled$1 = true;
+
+          // Create scroll layout
+          scrollLayout.y = barY.scrollLayout = {
+            barY: barY,
+            scrollTop: scrollTop,
+            scrollHeight: scrollHeight,
+            viewportHeight: viewportHeight,
+            barHeight: barHeight,
+            barTop: barTop,
+            minBarTop: minBarTop,
+            maxBarTop: maxBarTop,
+            onTopEdge: onTopEdge,
+            onBottomEdge: onBottomEdge,
+            onEdge: onEdge$1,
+            visible: visible$1,
+            canUnlockParentScroll: canUnlockParentScroll$1,
+            canScrollParent: canScrollParent$1,
+            scrolled: scrolled$1,
+          };
         }
+
+        // Emit scrollchange event
+        self.$emit('scrollchange', scrollLayout);
       }
 
       function onMouseUp() {
@@ -919,7 +985,8 @@ var __vue_module__ = {
         var maxBarLeft = viewportWidth - barWidth;
 
         // Calculate new bar position
-        var barLeft = scrollLeft / (scrollWidth - viewportWidth) * maxBarLeft;
+        var barLeft =
+          scrollLeft / (scrollWidth - viewportWidth) * maxBarLeft || 0;
 
         // Determine if new bar position is on edge
         var onLeftEdge = barLeft < minBarLeft;
@@ -952,14 +1019,15 @@ var __vue_module__ = {
         var couldScrollParent = previousScrollLayout.canScrollParent;
 
         // Allow scrolling of parent...
-        var canScrollParent =
-          // ...if parent scrolling was previously unlocked,
-          // continue let user scroll parent body.
+        var canScrollParent = !!// ...if parent scrolling was previously unlocked,
+        // continue let user scroll parent body.
+        (
           couldScrollParent ||
           // ...if scrollbar reached the edge of the viewport,
           // and user scrolled with enough inertia with
           // the intention to scroll parent body.
-          (wasOnEdge && couldUnlockParentScroll);
+          (wasOnEdge && couldUnlockParentScroll)
+        );
 
         // Add to computedLayout
         scrollLayout.x = barX.scrollLayout = {
@@ -1010,7 +1078,8 @@ var __vue_module__ = {
         var maxBarTop = viewportHeight - barHeight;
 
         // Calculate new bar position
-        var barTop = scrollTop / (scrollHeight - viewportHeight) * maxBarTop;
+        var barTop =
+          scrollTop / (scrollHeight - viewportHeight) * maxBarTop || 0;
 
         // Determine if new bar position is on edge
         var onTopEdge = barTop <= minBarTop;
@@ -1044,8 +1113,8 @@ var __vue_module__ = {
         var couldScrollParent$1 = ref$1.canScrollParent;
 
         // Allow scrolling of parent...
-        var canScrollParent$1 =
-          // ...if scrollbar is on edge and...
+        var canScrollParent$1 = !!// ...if scrollbar is on edge and...
+        (
           onEdge$1 &&
           // ...if parent scrolling was previously unlocked,
           // continue let user scroll parent body.
@@ -1053,7 +1122,8 @@ var __vue_module__ = {
             // ...if scrollbar reached the edge of the viewport,
             // and user scrolled with enough inertia with
             // the intention to scroll parent body.
-            (wasOnEdge$1 && couldUnlockParentScroll$1));
+            (wasOnEdge$1 && couldUnlockParentScroll$1))
+        );
 
         // Add to computedLayout
         scrollLayout.y = barY.scrollLayout = {
@@ -1074,6 +1144,9 @@ var __vue_module__ = {
           scrolled: scrolled$1,
         };
       }
+
+      // Emit scrollchange event
+      this.$emit('scrollchange', scrollLayout);
 
       return scrollLayout;
     },
