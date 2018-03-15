@@ -40,7 +40,7 @@ Then, construct your div block with overlay scrollbar using scrolly component.
 <scrolly class="foo" :style="{ width: '400px', height: '300px' }">
   <scrolly-viewport>
     <!-- Your contents here -->
-  </scrolly>
+  </scrolly-viewport>
   <scrolly-bar axis="y"></scrolly-bar>
   <scrolly-bar axis="x"></scrolly-bar>
 </scrolly>
