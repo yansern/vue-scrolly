@@ -39,7 +39,7 @@ try {
   window.addEventListener('test', null, opts);
 } catch (e) {}
 
-let supportsMutationObserver = 'MutationObserver' in window;
+let supportsMutationObserver = window === 'undefined' ? false : 'MutationObserver' in window;
 
 export {
   throttle,
