@@ -1039,7 +1039,6 @@ var __vue_module__ = {
           barLeft: barLeft,
           minBarLeft: minBarLeft,
           maxBarLeft: maxBarLeft,
-          visible: visible,
           onLeftEdge: onLeftEdge,
           onRightEdge: onRightEdge,
           onEdge: onEdge,
