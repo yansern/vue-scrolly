@@ -406,7 +406,6 @@ export default {
           barLeft,
           minBarLeft,
           maxBarLeft,
-          visible,
           onLeftEdge,
           onRightEdge,
           onEdge,
