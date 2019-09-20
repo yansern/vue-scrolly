@@ -60,7 +60,7 @@ export default {
         i = 0;
       while ((childNode = childNodes[i++])) {
         let { className } = childNode;
-        if (!className) continue;
+        if (!className || !className.match) continue;
         className.match('scrolly-viewport') && (viewport = childNode);
         className.match('axis-x') && (barX = childNode);
         className.match('axis-y') && (barY = childNode);
@@ -126,7 +126,7 @@ export default {
     onMouseDown({ target: bar, pageX: initialPageX, pageY: initialPageY }) {
       const className = bar.className;
 
-      if (!className.match('scrolly-bar')) return;
+      if (!className.match || !className.match('scrolly-bar')) return;
 
       let scrollLayout = {};
 
